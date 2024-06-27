@@ -1,12 +1,14 @@
 package vn.dtpsoft.modules.post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.dtpsoft.modules.post.form.CreatePostForm;
 import vn.dtpsoft.modules.post.form.UpdatePostForm;
 import vn.dtpsoft.modules.postCatefory.PostCategory;
 import vn.dtpsoft.modules.postCatefory.PostCategoryService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,25 +31,28 @@ public class PostController {
     }
 
     @PostMapping()
-    private Object createPost(@Valid @RequestBody CreatePostForm createPostForm){
+    private Object createPost(@Valid @ModelAttribute CreatePostForm createPostForm,@RequestParam("thumbnail") MultipartFile thumbnail)throws IOException{
         Post post = new Post();
+        String thumbnails = postService.saveThumbnailFile(thumbnail);
         post.setTitle(createPostForm.getTitle());
         post.setContent(createPostForm.getContent());
         PostCategory postCategory = postCategoryService.findById(createPostForm.getCategoryId());
         post.setPostCategory(postCategory);
+        post.setThumbnail(thumbnails);
         postService.savePost(post);
-
         return post;
     }
 
 
     @PutMapping("/{id}")
-    private Object updatePost(@Valid @RequestBody UpdatePostForm updatePostForm){
+    private Object updatePost(@Valid @ModelAttribute UpdatePostForm updatePostForm,@RequestParam("thumbnail") MultipartFile thumbnail)throws IOException{
         Post post =postService.findById(updatePostForm.getId());
+        String thumbnails = postService.saveThumbnailFile(thumbnail);
         post.setTitle(updatePostForm.getTitle());
         post.setContent(updatePostForm.getContent());
         PostCategory postCategory = postCategoryService.findById(updatePostForm.getCategoryId());
         post.setPostCategory(postCategory);
+        post.setThumbnail(thumbnails);
         return postService.savePost(post);
     }
 

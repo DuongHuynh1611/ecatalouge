@@ -33,3 +33,7 @@ build/
 .vscode/
 
 contents/
+
+contents/avatars
+
+contents/thumbnails

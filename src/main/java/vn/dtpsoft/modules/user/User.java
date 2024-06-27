@@ -65,4 +65,6 @@ public class User {
     @JsonIgnoreProperties(value = {"users","hibernateLazyInitializer"})
     private List<Role> roles;
 
+    private String avatarUrl;
+
 }
